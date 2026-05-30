@@ -98,7 +98,8 @@ if ($invoiceCurrencyCode !== "NGN") {
 }
 
 // --- 4. Build reference + init call ---------------------------------
-$txRef     = "DEC-" . $invoiceId . "-" . time() . "-" . substr(bin2hex(random_bytes(4)), 0, 8);
+$refPrefix = preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($gatewayParams["referencePrefix"] ?? "")) ?: "INV-";
+$txRef     = $refPrefix . $invoiceId . "-" . time() . "-" . substr(bin2hex(random_bytes(4)), 0, 8);
 $systemUrl = rtrim($gatewayParams["systemurl"], "/");
 
 $payload = [
@@ -111,7 +112,7 @@ $payload = [
         "name"  => $customerName,
     ],
     "customizations" => [
-        "title"       => $gatewayParams["companyName"] ?: "Decipher Hosting",
+        "title"       => $gatewayParams["companyName"] ?: "Checkout",
         "logo"        => $gatewayParams["companyLogo"] ?: "",
         "description" => "Invoice #" . $invoiceId,
     ],

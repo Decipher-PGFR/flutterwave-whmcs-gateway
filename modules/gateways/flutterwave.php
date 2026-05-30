@@ -77,8 +77,8 @@ function flutterwave_config()
             "FriendlyName" => "Company Name",
             "Type"         => "text",
             "Size"         => "50",
-            "Default"      => "Decipher Hosting",
-            "Description"  => "Shown on the Flutterwave checkout page.",
+            "Default"      => "",
+            "Description"  => "Your business name, shown on the Flutterwave checkout page.",
         ],
         "companyLogo" => [
             "FriendlyName" => "Logo URL",
@@ -91,6 +91,13 @@ function flutterwave_config()
             "FriendlyName" => "Test Mode",
             "Type"         => "yesno",
             "Description"  => "Tick when using FLWPUBK_TEST / FLWSECK_TEST keys.",
+        ],
+        "referencePrefix" => [
+            "FriendlyName" => "Reference Prefix",
+            "Type"         => "text",
+            "Size"         => "12",
+            "Default"      => "INV-",
+            "Description"  => "Prefix for generated payment references, e.g. INV-. The invoice id and a random token are appended automatically.",
         ],
     ];
 }
