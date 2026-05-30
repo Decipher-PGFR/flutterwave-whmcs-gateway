@@ -110,12 +110,13 @@ if ($status !== "successful") {
 }
 
 // --- 4. Derive invoice id -------------------------------------------
-// Prefer meta.invoice_id. Fall back to parsing our DEC-<id>-* tx_ref.
+// Prefer meta.invoice_id. Fall back to parsing the <prefix><id>-* tx_ref.
 $invoiceIdFromMeta = $meta["invoice_id"] ?? null;
+$refPrefix = preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($gatewayParams["referencePrefix"] ?? "")) ?: "INV-";
 $invoiceId = null;
 if (!empty($invoiceIdFromMeta) && ctype_digit((string) $invoiceIdFromMeta)) {
     $invoiceId = (int) $invoiceIdFromMeta;
-} elseif (preg_match('/^DEC-(\d+)-/', $txRef, $m)) {
+} elseif (preg_match('/^' . preg_quote($refPrefix, '/') . '(\d+)-/', $txRef, $m)) {
     $invoiceId = (int) $m[1];
 }
 
