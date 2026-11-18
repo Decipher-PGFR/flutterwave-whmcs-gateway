@@ -2,7 +2,9 @@
 
 WHMCS Third Party Gateway module for Flutterwave v3 Standard Checkout, built and maintained by Decipher Media Solutions LTD.
 
-Version: **1.0.0** — production-verified with live test transactions.
+The browser redirect is never treated as proof of payment. Every payment is confirmed by a signed webhook, re-verified server to server against Flutterwave before the invoice is credited, and checked against the invoice amount and currency. A tampered callback, a replayed reference or a short payment does not credit anything.
+
+Version: **1.0.0** — production-verified with live test transactions. MIT licensed. See [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -36,9 +38,10 @@ Authoritative confirmation is always the webhook + server-side re-verify. The br
 modules/gateways/flutterwave.php                       # module config + pay button
 modules/gateways/callback/flutterwave_redirect.php     # on-click redirect (initializes payment, sends customer to Flutterwave checkout)
 modules/gateways/callback/flutterwave.php              # webhook receiver (verifies + applies payment)
+.htaccess                                              # HTTPS enforcement + sensitive file blocking (optional, deploy to WHMCS doc root)
 ```
 
-Drop all three into your WHMCS install at the matching paths.
+Drop the three PHP files into your WHMCS install at the matching paths.
 
 ---
 
@@ -51,9 +54,11 @@ Drop all three into your WHMCS install at the matching paths.
    modules/gateways/callback/flutterwave_redirect.php
    ```
 
-2. In WHMCS admin: **Setup > Payments > Payment Gateways > All Payment Gateways** > click **Flutterwave (Decipher integration)** > **Activate**.
+2. Optionally deploy the `.htaccess` to your WHMCS document root for HTTPS enforcement. If you already have one, merge the rules instead of overwriting it.
 
-3. Fill in config fields:
+3. In WHMCS admin: **Setup > Payments > Payment Gateways > All Payment Gateways** > click **Flutterwave (Decipher integration)** > **Activate**.
+
+4. Fill in config fields:
    - **Public Key** — from Flutterwave dashboard (starts with `FLWPUBK_`)
    - **Secret Key** — from Flutterwave dashboard (starts with `FLWSECK_`)
    - **Webhook Secret Hash** — set in Flutterwave Dashboard > Settings > Webhooks
@@ -61,12 +66,12 @@ Drop all three into your WHMCS install at the matching paths.
    - **Logo URL** — square image URL shown on checkout page
    - **Test Mode** — tick when using test keys
 
-4. In Flutterwave dashboard > Settings > Webhooks > set Webhook URL:
+5. In Flutterwave dashboard > Settings > Webhooks > set Webhook URL:
    ```
    https://your-whmcs-domain.com/modules/gateways/callback/flutterwave.php
    ```
 
-5. Test with a small invoice using Flutterwave test keys.
+6. Test with a small invoice using Flutterwave test keys.
 
 ---
 
@@ -92,6 +97,22 @@ Drop all three into your WHMCS install at the matching paths.
 
 ---
 
+## Requirements
+
+- WHMCS 8.x
+- PHP 7.4+
+- A Flutterwave merchant account with API keys
+- cURL extension enabled
+- SSL certificate on your WHMCS domain
+
+---
+
+## Related
+
+- [korapay-whmcs](https://github.com/Decipher-PGFR/korapay-whmcs): the same approach for Korapay Checkout Redirect.
+
+---
+
 ## Reference
 
 - Flutterwave API docs: https://developer.flutterwave.com/docs
@@ -110,3 +131,5 @@ MIT. See [LICENSE](LICENSE).
 
 Decipher Media Solutions LTD  
 https://decipher.ng
+
+Flutterwave is the payment processor. This module is an independent integration, not affiliated with or endorsed by Flutterwave.
